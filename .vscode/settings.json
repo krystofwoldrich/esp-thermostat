@@ -1,0 +1,16 @@
+{
+    "python.linting.enabled": true,
+    "python.jediEnabled": false,
+
+    // Loaded Stubs:  esp8266-micropython-1.10.0 
+    "python.autoComplete.extraPaths": [".micropy/BradenM-micropy-stubs-551a4d8/frozen", ".micropy/BradenM-micropy-stubs-0a03ac2/frozen", ".micropy/BradenM-micropy-stubs-551a4d8/stubs", ".micropy/esp-thermostat"],
+    "python.autoComplete.typeshedPaths":  [".micropy/BradenM-micropy-stubs-551a4d8/frozen", ".micropy/BradenM-micropy-stubs-0a03ac2/frozen", ".micropy/BradenM-micropy-stubs-551a4d8/stubs", ".micropy/esp-thermostat"],
+    "python.analysis.typeshedPaths":  [".micropy/BradenM-micropy-stubs-551a4d8/frozen", ".micropy/BradenM-micropy-stubs-0a03ac2/frozen", ".micropy/BradenM-micropy-stubs-551a4d8/stubs", ".micropy/esp-thermostat"],
+
+    "python.linting.pylintEnabled": true,
+    "python.languageServer": "Microsoft",
+    "cSpell.words": [
+        "WLAN",
+        "essid"
+    ]
+}
