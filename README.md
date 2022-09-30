@@ -21,3 +21,37 @@ Hopefully this list will soon start growing.
 - Temperature telemetry
 - Setup guide (Wi-FI Hot-spot for setup)
 - MQTT Communication
+
+## Firmware
+
+I'm using cheap copy of NodeMCU with ESP8266.
+
+Used firmware: https://micropython.org/resources/firmware/esp8266-20220618-v1.19.1.bin
+
+### How to flash
+
+First we install prerequisites.
+
+```bash
+# Assuming you have some version of Python3
+pip install esptool
+
+#Verify install
+esptool.py -h
+```
+
+```bash
+esptool.py --port <PORT> erase_flash
+
+esptool.py --port <PORT> write_flash --flash_size=detect -fm dio 0x00000 <BIN_PATH>
+```
+
+## Misc
+
+I'm using Thonny because it's super simple and gets me right to coding.
+
+```
+pip install thonny
+
+thonny
+```
