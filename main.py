@@ -1,21 +1,75 @@
-import dht
-from machine import Pin
-from time import sleep
+# https://randomnerdtutorials.com/micropython-esp32-esp8266-dht11-dht22-web-server/
+# With changes but the core remains the same
 
-sensor = dht.DHT22(Pin(4))
-led = Pin(2, Pin.OUT)
-while True:
-    led.value(0)
-    sleep(0.5)
-    led.value(1)
-    sleep(0.5)
+def read_sensor():
+    temp = hum = 0
     try:
         sensor.measure()
         temp = sensor.temperature()
         hum = sensor.humidity()
-        temp_f = temp * (9/5) + 32.0
-        print('Temperature: %3.1f C' %temp)
-        print('Temperature: %3.1f F' %temp_f)
-        print('Humidity: %3.1f %%' %hum)
+        if (isinstance(temp, float) and isinstance(hum, float)) or (isinstance(temp, int) and isinstance(hum, int)):         
+            hum = round(hum, 2)
+            return({
+                'temperature': temp,
+                'humidity': hum,
+            })
+        else:
+            return('Invalid sensor readings.')
     except OSError as e:
-        print('Failed to read sensor.')
+        return('Failed to read sensor.')
+
+def web_page(data):
+  html = """<!DOCTYPE HTML><html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <style>
+    html {
+     font-family: Arial;
+     display: inline-block;
+     margin: 0px auto;
+     text-align: center;
+    }
+    h2 { font-size: 3.0rem; }
+    p { font-size: 3.0rem; }
+    .units { font-size: 1.2rem; }
+    .dht-labels{
+      font-size: 1.5rem;
+      vertical-align:middle;
+      padding-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h2>ESP DHT Server</h2>
+  <p>
+    <i class="fas fa-thermometer-half" style="color:#059e8a;"></i> 
+    <span class="dht-labels">Temperature</span> 
+    <span>"""+str(data['temperature'])+"""</span>
+    <sup class="units">&deg;C</sup>
+  </p>
+  <p>
+    <i class="fas fa-tint" style="color:#00add6;"></i> 
+    <span class="dht-labels">Humidity</span>
+    <span>"""+str(data['humidity'])+"""</span>
+    <sup class="units">%</sup>
+  </p>
+</body>
+</html>"""
+  return html
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind(('', 80))
+s.listen(5)
+
+while True:
+  conn, addr = s.accept()
+  print('Got a connection from %s' % str(addr))
+  request = conn.recv(1024)
+  sensor_readings = read_sensor()
+  response = web_page(sensor_readings)
+  conn.send('HTTP/1.1 200 OK\n')
+  conn.send('Content-Type: text/html\n')
+  conn.send('Connection: close\n\n')
+  conn.sendall(response)
+  conn.close()
