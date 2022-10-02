@@ -107,8 +107,10 @@ while True:
 
     if (time.time() - last_send) > int(config["message_interval_s"]):
         print("Sending message")
-        client.publish("test/temp", str(sensor_readings["temperature"]))
-        client.publish("test/hum", str(sensor_readings["humidity"]))
+        client.publish(
+            "home/living-room/temperature", str(sensor_readings["temperature"])
+        )
+        client.publish("home/living-room/humidity", str(sensor_readings["humidity"]))
         last_send = time.time()
 
     r, w, err = select((s,), (), (), 1)
