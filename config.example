@@ -1,3 +1,5 @@
 ssid=Wi-Fi Name
 password=super_secret
 sensor=4
+mqtt_server=172.12.0.20
+message_interval_s=10
